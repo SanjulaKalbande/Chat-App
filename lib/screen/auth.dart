@@ -41,7 +41,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isAuthenticating = true;
       });
     if (_isLogin) {
-      final userCredentials = _firebase.signInWithEmailAndPassword(
+      final userCredentials = await _firebase.signInWithEmailAndPassword(
           email: _enteredEmail,
           password: _enteredPassword);
     } else {
@@ -55,9 +55,9 @@ class _AuthScreenState extends State<AuthScreen> {
           .child('${userCredentials.user!.uid}.jpg');
 
       await storageRef.putFile(_selectedImage!);
-      final imageUrl = storageRef.getDownloadURL();
+      final imageUrl = await storageRef.getDownloadURL();
 
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('Users')
           .doc(userCredentials.user!.uid)
           .set({
@@ -127,6 +127,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               labelText: 'Username',
                             ),
                             enableSuggestions: false,
+                            autocorrect: false,
                             validator: (value){
                               if(value == null ||
                                  value.isEmpty ||
