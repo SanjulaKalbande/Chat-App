@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 class NewMessage extends StatefulWidget {
   const NewMessage({super.key});
 
   @override
-  State<NewMessage> createState() => _NewMessageState();
+  State<NewMessage> createState() {
+    return _NewMessageState();
+  }
 }
 
 class _NewMessageState extends State<NewMessage> {
@@ -19,11 +20,13 @@ class _NewMessageState extends State<NewMessage> {
     super.dispose();
   }
 
-  void _submitMessage() async{
+  void _submitMessage() async {
     final enteredMessage = _messageController.text;
-    if(enteredMessage.trim().isEmpty) {
+
+    if (enteredMessage.trim().isEmpty) {
       return;
     }
+
     FocusScope.of(context).unfocus();
     _messageController.clear();
 
@@ -33,12 +36,12 @@ class _NewMessageState extends State<NewMessage> {
         .doc(user.uid)
         .get();
 
-    FirebaseFirestore.instance.collection('Chat').add({
-      'text' : enteredMessage,
-      'createdAt' : Timestamp.now(),
-      'userId' : user.uid,
-      'username' : userData.data()!['username'],
-      'userImage' : userData.data()!['image_url'],
+    FirebaseFirestore.instance.collection('chat').add({
+      'text': enteredMessage,
+      'createdAt': Timestamp.now(),
+      'userId': user.uid,
+      'username': userData.data()!['username'],
+      'userImage': userData.data()!['image_url'],
     });
   }
 
@@ -49,20 +52,20 @@ class _NewMessageState extends State<NewMessage> {
       child: Row(
         children: [
           Expanded(
-              child: TextField(
-                controller: _messageController,
-                textCapitalization: TextCapitalization.sentences,
-                autocorrect: true,
-                enableSuggestions: true,
-                decoration: const InputDecoration(
-                  labelText: 'Message',
-              ),
+            child: TextField(
+              controller: _messageController,
+              textCapitalization: TextCapitalization.sentences,
+              autocorrect: true,
+              enableSuggestions: true,
+              decoration: const InputDecoration(labelText: 'Send a message...'),
             ),
           ),
           IconButton(
             color: Theme.of(context).colorScheme.primary,
+            icon: const Icon(
+              Icons.send,
+            ),
             onPressed: _submitMessage,
-            icon: const Icon(Icons.send),
           ),
         ],
       ),
